@@ -1,10 +1,9 @@
-import { Router } from 'express';
-import { authenticateJWT, AuthRequest } from '../middleware/auth';
-import { executeTransfer } from '../services/transferService';
-import { PrismaClient } from '@prisma/client';
+import { Router, type Request, type Response } from 'express';
+import { authenticateJWT, type AuthRequest } from '../middleware/auth.js';
+import { executeTransfer } from '../services/transferService.js';
+import { prisma } from '../utils/prisma.js';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response) => {
     const { receiverId, amount } = req.body;
@@ -19,9 +18,12 @@ router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response
         prisma.auditLog.create({
             data: {
                 transactionId: transaction.id,
-                logDetails: `Transfer of ${amount} from ${senderId} to ${receiverId} completed.`,
+                senderId: senderId,
+                receiverId: receiverId,
+                amount: amount,
+                status: 'SUCCESS',
             }
-        }).catch(err => console.error("Audit log failed:", err));
+        }).catch((err: Error) => console.error("Audit log failed:", err));
 
         // 3. REAL-TIME UPDATES (Emit to both sender and receiver)
         io.to(senderId).emit('balance_update', { message: 'Money sent successfully' });
@@ -33,27 +35,23 @@ router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response
     }
 });
 
-// Fetch transaction history for the logged-in user
+// Fetch transaction history (Audit Log) for the logged-in user
 router.get('/history', authenticateJWT, async (req: AuthRequest, res: Response) => {
     const userId = req.user!.id;
 
     try {
-        const history = await prisma.transaction.findMany({
+        const auditLogs = await prisma.auditLog.findMany({
             where: {
                 OR: [
                     { senderId: userId },
                     { receiverId: userId }
                 ]
             },
-            include: {
-                sender: { select: { username: true } },
-                receiver: { select: { username: true } }
-            },
-            orderBy: { createdAt: 'desc' }
+            orderBy: { timestamp: 'desc' }
         });
-        res.json(history);
+        res.json(auditLogs);
     } catch (error) {
-        res.status(500).json({ message: "Failed to fetch history" });
+        res.status(500).json({ message: "Failed to fetch transaction history" });
     }
 });
 

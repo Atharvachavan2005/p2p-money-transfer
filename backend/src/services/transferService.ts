@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { prisma } from '../utils/prisma.js';
 
 export const executeTransfer = async (senderId: string, receiverId: string, amount: number) => {
   return await prisma.$transaction(async (tx) => {
@@ -10,7 +9,7 @@ export const executeTransfer = async (senderId: string, receiverId: string, amou
     });
 
     // 2. Safety check: Can't have negative balance
-    if (sender.balance.lt(0)) throw new Error("Insufficient funds");
+    if (sender.balance < 0) throw new Error("Insufficient funds");
 
     // 3. Add to receiver
     await tx.user.update({

@@ -3,24 +3,24 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "mongodb"
+  url      = env("DATABASE_URL") //ignore v6 error
 }
 
 model User {
-  id             String        @id @default(uuid())
-  username       String        @unique
-  passwordHash   String
-  balance        Decimal       @default(1000.00)
-  sentTrans      Transaction[] @relation("sender")
-  receivedTrans  Transaction[] @relation("receiver")
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  username      String        @unique
+  passwordHash  String
+  balance       Float         @default(1000.00)
+  sentTrans     Transaction[] @relation("sender")
+  receivedTrans Transaction[] @relation("receiver")
 }
 
 model Transaction {
-  id         String   @id @default(uuid())
-  amount     Decimal
-  senderId   String
-  receiverId String
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  amount     Float
+  senderId   String   @db.ObjectId
+  receiverId String   @db.ObjectId
   status     String
   sender     User     @relation("sender", fields: [senderId], references: [id])
   receiver   User     @relation("receiver", fields: [receiverId], references: [id])
@@ -28,8 +28,11 @@ model Transaction {
 }
 
 model AuditLog {
-  id            String   @id @default(uuid())
-  transactionId String
-  logDetails    String
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  transactionId String   @db.ObjectId
+  senderId      String   @db.ObjectId
+  receiverId    String   @db.ObjectId
+  amount        Float
+  status        String
   timestamp     DateTime @default(now())
 }

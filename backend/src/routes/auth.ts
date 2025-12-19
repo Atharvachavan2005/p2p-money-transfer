@@ -1,10 +1,9 @@
-import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { Router, type Request, type Response} from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { prisma } from '../utils/prisma.js';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // 1. REGISTER: Create a user with a default balance
 router.post('/register', async (req: Request, res: Response) => {
@@ -22,6 +21,7 @@ router.post('/register', async (req: Request, res: Response) => {
 
         res.status(201).json({ message: "User created successfully", userId: user.id });
     } catch (error) {
+        console.log(error)
         res.status(400).json({ message: "Username already exists or invalid data" });
     }
 });
