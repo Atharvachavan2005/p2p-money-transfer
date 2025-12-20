@@ -10,11 +10,47 @@ router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response
     const senderId = req.user!.id;
     const io = req.app.get('io');
 
+    // Input validation
+    if (!receiverId || !amount) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Receiver ID and amount are required" 
+        });
+    }
+
+    if (typeof amount !== 'number' || amount <= 0) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Amount must be a positive number" 
+        });
+    }
+
+    if (receiverId === senderId) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Cannot transfer money to yourself" 
+        });
+    }
+
     try {
         // 1. EXECUTE ATOMIC TRANSACTION (Logic from Phase 3)
-        const transaction = await executeTransfer(senderId, receiverId, amount);
+        // This transaction will:
+        // - Check receiver exists (Ghost User Scenario)
+        // - Check balance BEFORE decrementing (Insufficient Funds Scenario)
+        // - Use MongoDB transactions to prevent race conditions
+        // - Rollback automatically on any error
+        const transaction = await executeTransfer(senderId, receiverId, amount) as {
+            id: string;
+            senderId: string;
+            receiverId: string;
+            amount: number;
+            status: string;
+            createdAt: Date;
+        };
 
-        // 2. ASYNCHRONOUS AUDIT LOGGING (Don't 'await' it to keep API fast)
+        // 2. ASYNCHRONOUS AUDIT LOGGING (Append-only, immutable)
+        // Audit log is separate from transaction - it's append-only
+        // We never edit or delete audit logs - they're immutable records
         prisma.auditLog.create({
             data: {
                 transactionId: transaction.id,
@@ -25,13 +61,67 @@ router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response
             }
         }).catch((err: Error) => console.error("Audit log failed:", err));
 
-        // 3. REAL-TIME UPDATES (Emit to both sender and receiver)
-        io.to(senderId).emit('balance_update', { message: 'Money sent successfully' });
-        io.to(receiverId).emit('balance_update', { message: 'You received money!' });
+        // 3. REAL-TIME UPDATES (Emit to both sender and receiver with updated balances)
+        const sender = await prisma.user.findUnique({ where: { id: senderId } });
+        const receiver = await prisma.user.findUnique({ where: { id: receiverId } });
+        
+        io.to(senderId).emit('balance_update', { 
+            message: 'Money sent successfully',
+            amount: -amount,
+            newBalance: sender?.balance || 0
+        });
+        io.to(receiverId).emit('balance_update', { 
+            message: 'You received money!',
+            amount: amount,
+            newBalance: receiver?.balance || 0
+        });
 
         res.status(200).json({ success: true, transaction });
     } catch (error: any) {
-        res.status(400).json({ success: false, message: error.message });
+        // All errors from executeTransfer will be caught here
+        // The transaction automatically rolls back, so balance never changes
+        const errorMessage = error.message || "Transfer failed";
+        
+        // Provide specific error messages
+        if (errorMessage.includes("Insufficient funds")) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Transaction failed: Insufficient funds" 
+            });
+        }
+        
+        if (errorMessage.includes("Receiver not found") || errorMessage.includes("not found")) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "Transaction failed: Receiver not found. Please verify the User ID." 
+            });
+        }
+
+        // Generic error response
+        res.status(400).json({ 
+            success: false, 
+            message: `Transaction failed: ${errorMessage}` 
+        });
+    }
+});
+
+// Fetch current user balance
+router.get('/balance', authenticateJWT, async (req: AuthRequest, res: Response) => {
+    const userId = req.user!.id;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { balance: true }
+        });
+        
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        
+        res.json({ balance: user.balance });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to fetch balance" });
     }
 });
 

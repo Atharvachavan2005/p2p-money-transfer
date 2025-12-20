@@ -1,0 +1,46 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+import AuthPage from "@/components/auth-page"
+import Dashboard from "@/components/dashboard"
+import Snowfall from 'react-snowfall'
+
+export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    setIsLoggedIn(!!token)
+    setIsLoading(false)
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <main className="min-h-screen bg-background">
+      <Snowfall color="82C3D9"/>
+      {isLoggedIn ? (
+        <Dashboard
+          onLogout={() => {
+            localStorage.removeItem("token")
+            localStorage.removeItem("user")
+            setIsLoggedIn(false)
+          }}
+        />
+      ) : (
+        <AuthPage onLoginSuccess={() => setIsLoggedIn(true)} />
+      )}
+    </main>
+  )
+}
