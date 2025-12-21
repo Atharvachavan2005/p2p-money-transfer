@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation"
 import AuthPage from "@/components/auth-page"
 import Dashboard from "@/components/dashboard"
 import Snowfall from 'react-snowfall'
+import { useSnowColor } from '@/hooks/use-snow-color'
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+  const snowColor = useSnowColor()
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -29,7 +31,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen w-full bg-lavish dark:bg-lavish-dark transition-colors duration-300">
-      <Snowfall color="82C3D9"/>
+      <Snowfall color={snowColor} />
       {isLoggedIn ? (
         <Dashboard
           onLogout={() => {

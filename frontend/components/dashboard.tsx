@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { LogOut, Moon, Sun } from "lucide-react"
+import { GithubIcon } from "@/components/ui/github-icon"
 import { useTheme } from "next-themes"
 import TransferForm from "@/components/transfer-form"
 import TransactionHistory from "@/components/transaction-history"
@@ -165,18 +166,30 @@ export default function Dashboard({ onLogout }: DashboardProps) {
           </div>
           <div className="flex items-center gap-2">
             {mounted && (
-              <Button
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                variant="ghost"
-                size="icon"
-                className="rounded-full w-10 h-10"
-              >
-                {theme === "dark" ? (
-                  <Sun className="w-5 h-5 text-yellow-400" />
-                ) : (
-                  <Moon className="w-5 h-5 text-slate-600" />
-                )}
-              </Button>
+              <>
+                <Button
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full w-10 h-10"
+                  aria-label="Toggle dark mode"
+                >
+                  {theme === "dark" ? (
+                    <Sun className="w-5 h-5 text-yellow-400" />
+                  ) : (
+                    <Moon className="w-5 h-5 text-slate-600" />
+                  )}
+                </Button>
+                <a
+                  href="https://github.com/Atharvachavan2005/p2p-money-transfer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="View GitHub Repository"
+                  className="ml-1 hover:text-primary transition-colors"
+                >
+                  <GithubIcon size={28} />
+                </a>
+              </>
             )}
             <Button onClick={handleLogout} variant="outline" className="flex items-center gap-2">
               <LogOut className="w-4 h-4" />

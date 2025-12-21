@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { AlertCircle, CheckCircle } from "lucide-react"
+import { GithubIcon } from "@/components/ui/github-icon"
 
 interface LoginFormProps {
   onSuccess: () => void
@@ -55,9 +56,20 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
 
   return (
     <Card className="auth-card-gradient p-8 border-0 shadow-2xl">
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Welcome Back</h2>
-        <p className="text-muted-foreground mt-2 text-sm">Enter your credentials to continue</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Welcome Back</h2>
+          <p className="text-muted-foreground mt-2 text-sm">Enter your credentials to continue</p>
+        </div>
+        <a
+          href="https://github.com/Atharvachavan2005/p2p-money-transfer"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View GitHub Repository"
+          className="ml-2 hover:text-primary transition-colors"
+        >
+          <GithubIcon size={28} />
+        </a>
       </div>
 
       {error && (
