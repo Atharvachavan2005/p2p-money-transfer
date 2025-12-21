@@ -76,7 +76,7 @@ Before you begin, make sure you have:
 5. **Start Backend Server**
    ```bash
    npm run dev
-   # Backend will run on http://localhost:5000
+   # Backend will run on https://p2p-money-transfer-server.vercel.app
    ```
 
 ---

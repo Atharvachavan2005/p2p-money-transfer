@@ -44,7 +44,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
     if (!token) return
 
     try {
-      const response = await fetch("http://localhost:5000/api/transactions/balance", {
+      const response = await fetch("https://p2p-money-transfer-server.vercel.app/api/transactions/balance", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -76,7 +76,7 @@ export default function Dashboard({ onLogout }: DashboardProps) {
     // Fetch initial balance
     fetchBalance()
 
-    const newSocket = io("http://localhost:5000", {
+    const newSocket = io("https://p2p-money-transfer-server.vercel.app", {
       reconnection: true,
     })
 

@@ -62,7 +62,7 @@ export default function TransferForm({ token, onSuccess, currentBalance }: Trans
     setIsProcessing(true) // Lock the form
 
     try {
-      const response = await fetch("http://localhost:5000/api/transactions/transfer", {
+      const response = await fetch("https://p2p-money-transfer-server.vercel.app/api/transactions/transfer", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

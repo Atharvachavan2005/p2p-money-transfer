@@ -42,7 +42,7 @@ export default function TransactionHistory({ token, userId }: TransactionHistory
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/transactions/history", {
+      const response = await fetch("https://p2p-money-transfer-server.vercel.app/api/transactions/history", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
