@@ -19,7 +19,7 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background dark:bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
@@ -28,7 +28,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen w-full bg-lavish dark:bg-lavish-dark transition-colors duration-300">
       <Snowfall color="82C3D9"/>
       {isLoggedIn ? (
         <Dashboard

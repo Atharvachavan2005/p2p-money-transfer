@@ -54,46 +54,49 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
   }
 
   return (
-    <Card className="p-6 md:p-8 border border-border bg-card shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-foreground">Welcome Back</h2>
+    <Card className="auth-card-gradient p-8 border-0 shadow-2xl">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Welcome Back</h2>
+        <p className="text-muted-foreground mt-2 text-sm">Enter your credentials to continue</p>
+      </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-3">
+        <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-3 backdrop-blur-sm">
           <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-destructive">{error}</p>
+          <p className="text-sm text-destructive font-medium">{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="mb-4 p-3 bg-accent/10 border border-accent/20 rounded-lg flex items-start gap-3">
+        <div className="mb-4 p-4 bg-accent/10 border border-accent/20 rounded-lg flex items-start gap-3 backdrop-blur-sm">
           <CheckCircle className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-accent">Login successful! Redirecting...</p>
+          <p className="text-sm text-accent font-medium">Login successful! Redirecting...</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">Username</label>
+          <label className="block text-sm font-semibold text-foreground mb-2">Username</label>
           <Input
             type="text"
-            placeholder="Enter your username"
+            placeholder="john_doe"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             disabled={isLoading}
-            className="bg-input border-border"
+            className="input-premium h-11"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">Password</label>
+          <label className="block text-sm font-semibold text-foreground mb-2">Password</label>
           <Input
             type="password"
-            placeholder="Enter your password"
+            placeholder="••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
-            className="bg-input border-border"
+            className="input-premium h-11"
             required
           />
         </div>
@@ -101,17 +104,17 @@ export default function LoginForm({ onSuccess, onSwitchToRegister }: LoginFormPr
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2"
+          className="btn-premium w-full text-primary-foreground font-semibold py-2.5 h-11 mt-2"
         >
           {isLoading ? "Logging in..." : "Login"}
         </Button>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className="mt-8 text-center border-t border-border/50 pt-6">
         <p className="text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <button onClick={onSwitchToRegister} className="text-primary hover:underline font-medium">
-            Sign up
+          <button onClick={onSwitchToRegister} className="text-primary hover:text-accent font-semibold transition-colors">
+            Create one
           </button>
         </p>
       </div>

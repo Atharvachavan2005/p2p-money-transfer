@@ -6,15 +6,15 @@ import { prisma } from '../utils/prisma.js';
 const router = Router();
 
 router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response) => {
-    const { receiverId, amount } = req.body;
+    const { receiverUsername, amount } = req.body;
     const senderId = req.user!.id;
     const io = req.app.get('io');
 
     // Input validation
-    if (!receiverId || !amount) {
+    if (!receiverUsername || !amount) {
         return res.status(400).json({ 
             success: false, 
-            message: "Receiver ID and amount are required" 
+            message: "Receiver username and amount are required" 
         });
     }
 
@@ -25,7 +25,7 @@ router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response
         });
     }
 
-    if (receiverId === senderId) {
+    if (receiverUsername === req.user!.username) {
         return res.status(400).json({ 
             success: false, 
             message: "Cannot transfer money to yourself" 
@@ -33,12 +33,22 @@ router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response
     }
 
     try {
-        // 1. EXECUTE ATOMIC TRANSACTION (Logic from Phase 3)
-        // This transaction will:
-        // - Check receiver exists (Ghost User Scenario)
-        // - Check balance BEFORE decrementing (Insufficient Funds Scenario)
-        // - Use MongoDB transactions to prevent race conditions
-        // - Rollback automatically on any error
+        // 1. Look up receiver by username
+        const receiver = await prisma.user.findUnique({
+            where: { username: receiverUsername },
+            select: { id: true }
+        });
+
+        if (!receiver) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "Receiver not found. Please verify the username." 
+            });
+        }
+
+        const receiverId = receiver.id;
+
+        // 2. EXECUTE ATOMIC TRANSACTION (Logic from Phase 3)
         const transaction = await executeTransfer(senderId, receiverId, amount) as {
             id: string;
             senderId: string;
@@ -62,18 +72,18 @@ router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response
         }).catch((err: Error) => console.error("Audit log failed:", err));
 
         // 3. REAL-TIME UPDATES (Emit to both sender and receiver with updated balances)
-        const sender = await prisma.user.findUnique({ where: { id: senderId } });
-        const receiver = await prisma.user.findUnique({ where: { id: receiverId } });
+        const senderData = await prisma.user.findUnique({ where: { id: senderId } });
+        const receiverData = await prisma.user.findUnique({ where: { id: receiverId } });
         
         io.to(senderId).emit('balance_update', { 
             message: 'Money sent successfully',
             amount: -amount,
-            newBalance: sender?.balance || 0
+            newBalance: senderData?.balance || 0
         });
         io.to(receiverId).emit('balance_update', { 
             message: 'You received money!',
             amount: amount,
-            newBalance: receiver?.balance || 0
+            newBalance: receiverData?.balance || 0
         });
 
         res.status(200).json({ success: true, transaction });
@@ -93,7 +103,7 @@ router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response
         if (errorMessage.includes("Receiver not found") || errorMessage.includes("not found")) {
             return res.status(404).json({ 
                 success: false, 
-                message: "Transaction failed: Receiver not found. Please verify the User ID." 
+                message: "Transfer failed: Receiver username not found. Please verify the username." 
             });
         }
 

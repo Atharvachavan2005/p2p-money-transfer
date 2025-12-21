@@ -6,6 +6,7 @@ export const executeTransfer = async (senderId: string, receiverId: string, amou
   // and use optimistic locking pattern
   return await prisma.$transaction(async (tx) => {
     // 1. Check if receiver exists FIRST (Ghost User Scenario)
+    // This check is redundant now since we do it in the route, but kept for safety
     // This prevents money from being "lost" if receiver doesn't exist
     const receiver = await tx.user.findUnique({
       where: { id: receiverId },
@@ -13,7 +14,7 @@ export const executeTransfer = async (senderId: string, receiverId: string, amou
     });
 
     if (!receiver) {
-      throw new Error("Receiver not found. Please verify the User ID.");
+      throw new Error("Receiver not found. Please verify the username.");
     }
 
     // 2. Check sender balance BEFORE decrementing (Insufficient Funds Scenario)

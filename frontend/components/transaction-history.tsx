@@ -67,8 +67,13 @@ export default function TransactionHistory({ token, userId }: TransactionHistory
   const isOutgoing = (transaction: Transaction) => transaction.senderId === userId
 
   return (
-    <Card className="p-6 md:p-8 border border-border bg-card shadow-lg">
-      <h3 className="text-xl font-bold mb-6 text-foreground">Transaction History</h3>
+    <Card className="p-6 md:p-8 border border-border/50 bg-card/80 dark:bg-card/60 shadow-xl backdrop-blur-sm hover:shadow-2xl transition-all duration-300">
+      <h3 className="text-2xl font-bold mb-6 text-foreground flex items-center gap-3">
+        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+          <ArrowDownLeft className="w-5 h-5 text-primary-foreground" />
+        </div>
+        Transaction History
+      </h3>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
@@ -79,14 +84,14 @@ export default function TransactionHistory({ token, userId }: TransactionHistory
           <p className="text-muted-foreground">No transactions yet</p>
         </div>
       ) : (
-        <div className="space-y-3 max-h-[500px] overflow-y-auto">
+        <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
           {transactions.map((tx) => (
             <div
               key={tx.id}
-              className="flex items-center justify-between p-3 bg-muted rounded-lg hover:bg-muted/70 transition-colors"
+              className="flex items-center justify-between p-4 bg-card/40 dark:bg-card/30 border border-border/30 rounded-lg hover:bg-card/60 dark:hover:bg-card/50 hover:border-border/50 transition-all duration-200 backdrop-blur-sm"
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className={`p-2 rounded-full ${isOutgoing(tx) ? "bg-destructive/10" : "bg-accent/10"}`}>
+                <div className={`p-2.5 rounded-lg ${isOutgoing(tx) ? "bg-destructive/15 dark:bg-destructive/20" : "bg-accent/15 dark:bg-accent/20"}`}>
                   {isOutgoing(tx) ? (
                     <ArrowUpRight className={`w-4 h-4 text-destructive`} />
                   ) : (
@@ -94,7 +99,7 @@ export default function TransactionHistory({ token, userId }: TransactionHistory
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">
+                  <p className="text-sm font-semibold text-foreground truncate">
                     {isOutgoing(tx) ? "Sent to" : "Received from"} {isOutgoing(tx) ? tx.receiverId : tx.senderId}
                   </p>
                   <p className="text-xs text-muted-foreground">
@@ -103,10 +108,10 @@ export default function TransactionHistory({ token, userId }: TransactionHistory
                 </div>
               </div>
               <div className="text-right ml-2">
-                <p className={`text-sm font-semibold ${isOutgoing(tx) ? "text-destructive" : "text-accent"}`}>
+                <p className={`text-sm font-bold ${isOutgoing(tx) ? "text-destructive" : "text-accent"}`}>
                   {isOutgoing(tx) ? "-" : "+"}₹{tx.amount.toFixed(2)}
                 </p>
-                <p className="text-xs text-muted-foreground">{tx.status}</p>
+                <p className="text-xs text-muted-foreground font-medium">{tx.status}</p>
               </div>
             </div>
           ))}

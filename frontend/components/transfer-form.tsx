@@ -16,7 +16,7 @@ interface TransferFormProps {
 }
 
 export default function TransferForm({ token, onSuccess, currentBalance }: TransferFormProps) {
-  const [receiverId, setReceiverId] = useState("")
+  const [receiverUsername, setReceiverUsername] = useState("")
   const [amount, setAmount] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -37,8 +37,8 @@ export default function TransferForm({ token, onSuccess, currentBalance }: Trans
       return
     }
 
-    if (!receiverId.trim()) {
-      setError("Please enter the recipient User ID")
+    if (!receiverUsername.trim()) {
+      setError("Please enter the recipient username")
       return
     }
 
@@ -69,7 +69,7 @@ export default function TransferForm({ token, onSuccess, currentBalance }: Trans
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          receiverId,
+          receiverUsername,
           amount: Number.parseFloat(amount),
         }),
       })
@@ -98,7 +98,7 @@ export default function TransferForm({ token, onSuccess, currentBalance }: Trans
       onSuccess()
 
       setTimeout(() => {
-        setReceiverId("")
+        setReceiverUsername("")
         setAmount("")
         setSuccess(false)
       }, 2000)
@@ -117,64 +117,66 @@ export default function TransferForm({ token, onSuccess, currentBalance }: Trans
   }
 
   return (
-    <Card className="p-6 md:p-8 border border-border bg-card shadow-lg">
-      <h3 className="text-xl font-bold mb-6 text-foreground flex items-center gap-2">
-        <Send className="w-5 h-5 text-primary" />
+    <Card className="p-6 md:p-8 border border-border/50 bg-card/80 dark:bg-card/60 shadow-xl backdrop-blur-sm hover:shadow-2xl transition-all duration-300">
+      <h3 className="text-2xl font-bold mb-6 text-foreground flex items-center gap-3">
+        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+          <Send className="w-5 h-5 text-primary-foreground" />
+        </div>
         Send Money
       </h3>
 
       {error && (
-        <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-lg flex items-start gap-3">
+        <div className="mb-4 p-4 bg-destructive/10 border border-destructive/30 rounded-lg flex items-start gap-3 backdrop-blur-sm">
           <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-destructive">{error}</p>
+          <p className="text-sm text-destructive font-medium">{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="mb-4 p-3 bg-accent/10 border border-accent/20 rounded-lg flex items-start gap-3">
+        <div className="mb-4 p-4 bg-accent/10 border border-accent/30 rounded-lg flex items-start gap-3 backdrop-blur-sm">
           <CheckCircle className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-accent">Money sent successfully!</p>
+          <p className="text-sm text-accent font-medium">Money sent successfully!</p>
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">Recipient User ID</label>
+          <label className="block text-sm font-semibold text-foreground mb-2">Recipient Username</label>
           <Input
             type="text"
-            placeholder="Enter the User ID of the recipient"
-            value={receiverId}
-            onChange={(e) => setReceiverId(e.target.value)}
+            placeholder="e.g., john_doe"
+            value={receiverUsername}
+            onChange={(e) => setReceiverUsername(e.target.value)}
             disabled={isLoading}
-            className="bg-input border-border"
+            className="bg-input border-border/50 focus:ring-2 focus:ring-primary/30"
             required
           />
-          <p className="text-xs text-muted-foreground mt-1">Ask the recipient to share their User ID</p>
+          <p className="text-xs text-muted-foreground mt-1">Enter the username you want to send money to</p>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-foreground mb-2">Amount (₹)</label>
+          <label className="block text-sm font-semibold text-foreground mb-2">Amount (₹)</label>
           <Input
             type="number"
             placeholder="Enter amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             disabled={isLoading}
-            className="bg-input border-border"
+            className="bg-input border-border/50 focus:ring-2 focus:ring-primary/30"
             step="0.01"
             min="0"
             max={currentBalance}
             required
           />
           <p className="text-xs text-muted-foreground mt-1">
-            Available: ₹{currentBalance.toFixed(2)}
+            Available: <span className="font-semibold text-foreground">₹{currentBalance.toFixed(2)}</span>
           </p>
         </div>
 
         <Button
           type="submit"
           disabled={isLoading || isProcessing}
-          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2"
+          className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold py-2 rounded-lg transition-all duration-300 disabled:opacity-50"
         >
           {isLoading || isProcessing ? "Processing..." : "Send Money"}
         </Button>

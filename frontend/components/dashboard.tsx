@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { LogOut } from "lucide-react"
+import { LogOut, Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
 import TransferForm from "@/components/transfer-form"
 import TransactionHistory from "@/components/transaction-history"
 import { useToast } from "@/hooks/use-toast"
@@ -24,8 +25,11 @@ export default function Dashboard({ onLogout }: DashboardProps) {
   const [balance, setBalance] = useState(0)
   const [socket, setSocket] = useState<Socket | null>(null)
   const { toast } = useToast()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     const userData = localStorage.getItem("user")
     if (userData) {
       const parsedUser = JSON.parse(userData)
@@ -149,25 +153,49 @@ export default function Dashboard({ onLogout }: DashboardProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6">
+    <div className="min-h-screen bg-lavish dark:bg-lavish-dark p-4 md:p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Paisa</h1>
-            <p className="text-muted-foreground">Welcome back, {user.username}</p>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              P2P Ledger System
+            </h1>
+            <p className="text-muted-foreground mt-1">Welcome back, <span className="font-semibold text-foreground">{user.username}</span></p>
           </div>
-          <Button onClick={handleLogout} variant="outline" className="flex items-center gap-2 bg-transparent">
-            <LogOut className="w-4 h-4" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-2">
+            {mounted && (
+              <Button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                variant="ghost"
+                size="icon"
+                className="rounded-full w-10 h-10"
+              >
+                {theme === "dark" ? (
+                  <Sun className="w-5 h-5 text-yellow-400" />
+                ) : (
+                  <Moon className="w-5 h-5 text-slate-600" />
+                )}
+              </Button>
+            )}
+            <Button onClick={handleLogout} variant="outline" className="flex items-center gap-2">
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
         </div>
 
-        {/* Balance Card */}
-        <Card className="p-6 md:p-8 mb-8 bg-gradient-to-br from-primary to-secondary text-primary-foreground shadow-lg">
-          <p className="text-sm opacity-90 mb-2">Your Balance</p>
-          <h2 className="text-4xl md:text-5xl font-bold transition-all duration-300">₹{balance.toFixed(2)}</h2>
-          <p className="text-sm opacity-75 mt-2">User ID: {user.id}</p>
+        {/* Balance Card - Lavish Design */}
+        <Card className="p-8 md:p-10 mb-8 balance-gradient text-primary-foreground shadow-2xl border-0 overflow-hidden relative">
+          <div className="absolute inset-0 bg-white/10 dark:bg-white/5 backdrop-blur-sm"></div>
+          <div className="relative z-10">
+            <p className="text-sm opacity-90 mb-2 font-medium tracking-wide">YOUR BALANCE</p>
+            <h2 className="text-5xl md:text-6xl font-bold transition-all duration-300 mb-4">₹{balance.toFixed(2)}</h2>
+            <div className="flex items-center gap-2 text-sm opacity-85">
+              <span className="inline-block w-2 h-2 rounded-full bg-white/70"></span>
+              <p>Username: <span className="font-semibold">{user.username}</span></p>
+            </div>
+          </div>
         </Card>
 
         <div className="grid md:grid-cols-2 gap-8">
