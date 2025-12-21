@@ -94,8 +94,9 @@ export default function Dashboard({ onLogout }: DashboardProps) {
           setUser(updatedUser)
           localStorage.setItem("user", JSON.stringify(updatedUser))
         }
-      } else if (data.amount) {
-        setBalance((prev) => prev + data.amount)
+      } else if (data.amount !== undefined) {
+        const amount = data.amount
+        setBalance((prev) => prev + amount)
       } else {
         // Fallback: fetch balance from server
         fetchBalance()
