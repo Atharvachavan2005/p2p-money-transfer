@@ -72,19 +72,23 @@ router.post('/transfer', authenticateJWT, async (req: AuthRequest, res: Response
         }).catch((err: Error) => console.error("Audit log failed:", err));
 
         // 3. REAL-TIME UPDATES (Emit to both sender and receiver with updated balances)
-        const senderData = await prisma.user.findUnique({ where: { id: senderId } });
-        const receiverData = await prisma.user.findUnique({ where: { id: receiverId } });
-        
-        io.to(senderId).emit('balance_update', { 
-            message: 'Money sent successfully',
-            amount: -amount,
-            newBalance: senderData?.balance || 0
-        });
-        io.to(receiverId).emit('balance_update', { 
-            message: 'You received money!',
-            amount: amount,
-            newBalance: receiverData?.balance || 0
-        });
+        // Note: Socket.IO may not work in serverless environments (e.g., Vercel)
+        // Added safety check to prevent errors when io is undefined
+        if (io && typeof io.to === 'function') {
+            const senderData = await prisma.user.findUnique({ where: { id: senderId } });
+            const receiverData = await prisma.user.findUnique({ where: { id: receiverId } });
+            
+            io.to(senderId).emit('balance_update', { 
+                message: 'Money sent successfully',
+                amount: -amount,
+                newBalance: senderData?.balance || 0
+            });
+            io.to(receiverId).emit('balance_update', { 
+                message: 'You received money!',
+                amount: amount,
+                newBalance: receiverData?.balance || 0
+            });
+        }
 
         res.status(200).json({ success: true, transaction });
     } catch (error: any) {
