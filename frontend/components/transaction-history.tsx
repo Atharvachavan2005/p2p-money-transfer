@@ -26,8 +26,8 @@ export default function TransactionHistory({ token, userId }: TransactionHistory
 
   useEffect(() => {
     fetchTransactions()
-    // Faster polling for quicker updates (every 2 seconds)
-    const interval = setInterval(fetchTransactions, 2000)
+    // Aggressive polling for instant updates (every 1 second)
+    const interval = setInterval(fetchTransactions, 1000)
     
     // Listen for refresh event from transfer success
     const handleRefresh = () => {
