@@ -95,6 +95,9 @@ export default function TransferForm({ token, onSuccess, currentBalance }: Trans
         title: "Success! ✅",
         description: `₹${transferAmount.toFixed(2)} sent successfully`,
       })
+      
+      // Immediately trigger refresh for instant UI update
+      window.dispatchEvent(new Event("refresh-transactions"))
       onSuccess()
 
       setTimeout(() => {

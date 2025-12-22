@@ -75,6 +75,9 @@ export default function Dashboard({ onLogout }: DashboardProps) {
 
     // Fetch initial balance
     fetchBalance()
+    
+    // Poll balance every 2 seconds for fast updates (important since Socket.IO doesn't work on Vercel)
+    const balanceInterval = setInterval(fetchBalance, 2000)
 
     const newSocket = io("https://p2p-money-transfer-server.vercel.app", {
       reconnection: true,
@@ -128,15 +131,17 @@ export default function Dashboard({ onLogout }: DashboardProps) {
     setSocket(newSocket)
 
     return () => {
+      clearInterval(balanceInterval)
       newSocket.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id])
 
   const handleTransferSuccess = async () => {
-    // Fetch updated balance from server
+    // Immediately fetch updated balance from server
     await fetchBalance()
-    // Transaction history will refresh via socket event
+    // Trigger immediate transaction history refresh
+    window.dispatchEvent(new Event("refresh-transactions"))
   }
 
   const handleLogout = () => {

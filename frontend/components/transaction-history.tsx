@@ -26,10 +26,12 @@ export default function TransactionHistory({ token, userId }: TransactionHistory
 
   useEffect(() => {
     fetchTransactions()
-    const interval = setInterval(fetchTransactions, 5000)
+    // Faster polling for quicker updates (every 2 seconds)
+    const interval = setInterval(fetchTransactions, 2000)
     
-    // Listen for refresh event from socket updates
+    // Listen for refresh event from transfer success
     const handleRefresh = () => {
+      // Immediate fetch on refresh event
       fetchTransactions()
     }
     window.addEventListener("refresh-transactions", handleRefresh)
@@ -38,7 +40,7 @@ export default function TransactionHistory({ token, userId }: TransactionHistory
       clearInterval(interval)
       window.removeEventListener("refresh-transactions", handleRefresh)
     }
-  }, [])
+  }, [token])
 
   const fetchTransactions = async () => {
     try {
