@@ -8,8 +8,8 @@ A peer-to-peer fund transfer application with real-time updates and immutable au
 > The demo covers: user registration, login, fund transfers, real-time balance updates, and transaction history.
 
 ## 🌐 Live Deployment
-- **Frontend**: [https://YOUR_FRONTEND_VERCEL_URL.vercel.app](https://YOUR_FRONTEND_VERCEL_URL.vercel.app)
-- **Backend API**: [https://YOUR_BACKEND_VERCEL_URL.vercel.app](https://YOUR_BACKEND_VERCEL_URL.vercel.app)
+- **Frontend**: [https://p2p-money-transfer.vercel.app](https://p2p-money-transfer.vercel.app)
+- **Backend API**: [https://p2p-money-transfer-server.vercel.app](https://p2p-money-transfer-server.vercel.app)
 
 ---
 
@@ -31,7 +31,7 @@ This project implements a simple peer-to-peer money transfer system where users 
 ### Tech Stack
 | Layer | Technology |
 |-------|------------|
-| Frontend | Next.js 15, React, TypeScript, Tailwind CSS |
+| Frontend | Next.js 15, React, TypeScript, Tailwind CSS (Built with v0.dev) |
 | Backend | Node.js, Express.js, TypeScript |
 | Database | MongoDB with Prisma ORM |
 | Auth | JWT (jsonwebtoken), bcryptjs |
@@ -199,87 +199,19 @@ Get transaction history (audit log) for current user.
 ```
 
 ### Postman Collection
-Import the collection below into Postman for testing:
 
-```json
-{
-  "info": {
-    "name": "P2P Transfer API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Auth",
-      "item": [
-        {
-          "name": "Register",
-          "request": {
-            "method": "POST",
-            "url": "{{base_url}}/api/auth/register",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"username\": \"testuser\", \"password\": \"password123\"}"
-            }
-          }
-        },
-        {
-          "name": "Login",
-          "request": {
-            "method": "POST",
-            "url": "{{base_url}}/api/auth/login",
-            "header": [{"key": "Content-Type", "value": "application/json"}],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"username\": \"testuser\", \"password\": \"password123\"}"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Transactions",
-      "item": [
-        {
-          "name": "Transfer Money",
-          "request": {
-            "method": "POST",
-            "url": "{{base_url}}/api/transactions/transfer",
-            "header": [
-              {"key": "Content-Type", "value": "application/json"},
-              {"key": "Authorization", "value": "Bearer {{token}}"}
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\"receiverUsername\": \"receiver_username\", \"amount\": 100}"
-            }
-          }
-        },
-        {
-          "name": "Get Balance",
-          "request": {
-            "method": "GET",
-            "url": "{{base_url}}/api/transactions/balance",
-            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}]
-          }
-        },
-        {
-          "name": "Get History",
-          "request": {
-            "method": "GET",
-            "url": "{{base_url}}/api/transactions/history",
-            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}]
-          }
-        }
-      ]
-    }
-  ],
-  "variable": [
-    {"key": "base_url", "value": "http://localhost:5000"},
-    {"key": "token", "value": "your_jwt_token_here"}
-  ]
-}
-```
+📁 **Download**: [P2P-Transfer-System.postman_collection.json](./P2P-Transfer-System.postman_collection.json)
+
+Import this file directly into Postman to test all API endpoints.
+
+**Collection Variables:**
+| Variable | Default Value | Description |
+|----------|---------------|-------------|
+| baseUrl | http://localhost:5000 | API base URL |
+| username | testuser | Test username |
+| password | testpassword123 | Test password |
+| authToken | (auto-filled) | JWT token after login |
+| amount | 100 | Transfer amount |
 
 ---
 
@@ -337,25 +269,29 @@ The application uses MongoDB with Prisma ORM. Here's the schema structure:
 
 ### Tools Used
 - **GitHub Copilot** (VS Code Extension)
-- **Google Gemini 2.0 Flash**
-- **ChatGPT 4 Turbo**
+- **Google Gemini 3 Flash**
+- **ChatGPT 5.2**
+- **v0.dev** (Vercel's AI UI Generator)
 
 ### AI-Assisted Tasks
 
 | Task | Tool Used | What Was Generated | Manual Modifications |
 |------|-----------|-------------------|---------------------|
-| Prisma schema design | Gemini 2.0 Flash | Initial schema with User, Transaction models | Added AuditLog model, adjusted field types for MongoDB |
-| Database transaction boilerplate | ChatGPT 4 Turbo | `executeTransfer` function with Prisma `$transaction` | Added balance validation, error handling, timeout config |
+| Complete Frontend UI | v0.dev | Full Next.js frontend with all components, pages, forms | Integrated with backend APIs, added real-time socket handling |
+| Prisma schema design | Gemini 3 Flash | Initial schema with User, Transaction models | Added AuditLog model, adjusted field types for MongoDB |
+| Database transaction boilerplate | ChatGPT 5.2 | `executeTransfer` function with Prisma `$transaction` | Added balance validation, error handling, timeout config |
 | JWT authentication middleware | GitHub Copilot | Basic middleware structure | Added type definitions, error messages, token extraction logic |
-| Frontend transaction history table | Gemini 2.0 Flash | Initial table component with mapping | Styled with Tailwind, added sorting by timestamp, added icons |
 | Input validation logic | GitHub Copilot | Autocompleted validation checks | Added custom error messages, edge case handling |
-| Socket.IO setup | ChatGPT 4 Turbo | Server-side socket configuration | Added room-based messaging, serverless environment checks |
+| Socket.IO setup | ChatGPT 5.2 | Server-side socket configuration | Added room-based messaging, serverless environment checks |
 | Error handling patterns | GitHub Copilot | Try-catch blocks, error responses | Customized error messages for different scenarios |
-| React form handling | GitHub Copilot | Form state management, submit handlers | Added loading states, success/error feedback UI |
 
 ### Detailed Usage Examples
 
-**1. Database Transaction Boilerplate (ChatGPT 4 Turbo)**
+**1. Complete Frontend (v0.dev)**
+
+Used v0.dev to generate the entire frontend UI including login/register forms, dashboard, transfer form, and transaction history components. The generated code was then integrated with the backend APIs and Socket.IO for real-time updates.
+
+**2. Database Transaction Boilerplate (ChatGPT 5.2)**
 
 Prompt: "Write a Prisma transaction for transferring money between two users with balance check"
 
@@ -365,17 +301,16 @@ Generated code provided the basic structure, but I had to:
 - Add proper TypeScript types
 - Handle the "receiver not found" edge case
 
-**2. Sortable History Table (Gemini 2.0 Flash)**
+**3. Prisma Schema (Gemini 3 Flash)**
 
-Prompt: "Create a React component to display transaction history in a table sorted by date"
+Prompt: "Create MongoDB Prisma schema for P2P transfer with users, transactions, and audit logs"
 
-The generated component needed modifications:
-- Changed from basic HTML table to styled card-based list
-- Added visual indicators for sent vs received
-- Integrated `date-fns` for relative timestamps
-- Added responsive design for mobile
+Modifications made:
+- Adjusted ObjectId mappings for MongoDB
+- Added proper relations between models
+- Set default balance value
 
-**3. JWT Middleware (GitHub Copilot)**
+**4. JWT Middleware (GitHub Copilot)**
 
 Copilot suggested the middleware structure as I typed. Modifications made:
 - Added proper TypeScript interface for `AuthRequest`
@@ -431,6 +366,7 @@ p2p-transfer-system/
 │   └── package.json
 ├── demo/
 │   └── README.md              # Demo video link
+├── P2P-Transfer-System.postman_collection.json  # Postman API collection
 └── README.md                  # This file
 ```
 
