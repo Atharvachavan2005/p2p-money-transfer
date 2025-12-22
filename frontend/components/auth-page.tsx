@@ -40,6 +40,11 @@ export default function AuthPage({ onLoginSuccess }: AuthPageProps) {
         <div className="mt-8 text-center text-xs text-muted-foreground">
           <p>💳 Starting balance: ₹1,000 • 🔒 Secure transactions • ⚡ Real-time updates</p>
         </div>
+        
+        {/* Made with love footer */}
+        <div className="mt-6 text-center text-xs text-muted-foreground/70">
+          <p>Made with ❤️ by <span className="font-semibold text-foreground">Atharva Pravin Chavan</span></p>
+        </div>
       </div>
     </div>
   )

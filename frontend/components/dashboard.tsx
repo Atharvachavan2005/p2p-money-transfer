@@ -227,6 +227,11 @@ export default function Dashboard({ onLogout }: DashboardProps) {
             <TransactionHistory token={localStorage.getItem("token") || ""} userId={user.id} />
           </div>
         </div>
+        
+        {/* Made with love footer */}
+        <div className="mt-12 pb-6 text-center text-sm text-muted-foreground/70">
+          <p>Made with ❤️ by <span className="font-semibold text-foreground">Atharva Pravin Chavan</span></p>
+        </div>
       </div>
     </div>
   )
