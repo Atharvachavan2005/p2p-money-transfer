@@ -13,7 +13,7 @@ A peer-to-peer fund transfer application with real-time updates and immutable au
 
 The demo covers: user registration, login, fund transfers, real-time balance updates, and transaction history. You can also open the video directly: **[Watch the Demo Video](https://drive.google.com/file/d/101CjNC4RYNxKbAFyL0Cd2sOGEoTNP3MR/preview)**
 
-Note: If `demo/thumbnail.png` is missing, the badge below will be shown instead:
+
 
 <p align="center">
   <a href="https://drive.google.com/file/d/101CjNC4RYNxKbAFyL0Cd2sOGEoTNP3MR/preview" target="_blank" rel="noopener noreferrer">
