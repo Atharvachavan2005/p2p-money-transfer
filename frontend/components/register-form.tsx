@@ -48,17 +48,34 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
 
       if (!response.ok) {
         setError(data.message || "Registration failed")
+        setIsLoading(false)
         return
       }
 
       setSuccess(true)
 
-      setTimeout(() => {
-        onSuccess()
-        setUsername("")
-        setPassword("")
-        setConfirmPassword("")
-      }, 2000)
+      // Auto-login: If backend returns token, save it and go to dashboard
+      if (data.token && data.user) {
+        localStorage.setItem("token", data.token)
+        localStorage.setItem("user", JSON.stringify(data.user))
+        
+        setTimeout(() => {
+          setIsLoading(false)
+          onSuccess() // This will trigger login success and show dashboard
+          setUsername("")
+          setPassword("")
+          setConfirmPassword("")
+        }, 1500)
+      } else {
+        // Fallback: Old backend without auto-login, switch to login page
+        setTimeout(() => {
+          setIsLoading(false)
+          onSwitchToLogin()
+          setUsername("")
+          setPassword("")
+          setConfirmPassword("")
+        }, 1500)
+      }
     } catch (err) {
       setError("Connection error. Please check if the backend is running.")
     } finally {
@@ -83,7 +100,7 @@ export default function RegisterForm({ onSuccess, onSwitchToLogin }: RegisterFor
       {success && (
         <div className="mb-4 p-4 bg-accent/10 border border-accent/20 rounded-lg flex items-start gap-3 backdrop-blur-sm">
           <CheckCircle className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
-          <p className="text-sm text-accent font-medium">Account created! Redirecting to login...</p>
+          <p className="text-sm text-accent font-medium">Account created successfully! Logging you in...</p>
         </div>
       )}
 

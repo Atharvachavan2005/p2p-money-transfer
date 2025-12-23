@@ -19,7 +19,19 @@ router.post('/register', async (req: Request, res: Response) => {
             }
         });
 
-        res.status(201).json({ message: "User created successfully", userId: user.id });
+        // Auto-login: Generate JWT token for the new user
+        const token = jwt.sign(
+            { id: user.id, username: user.username },
+            process.env.JWT_SECRET as string,
+            { expiresIn: '24h' }
+        );
+
+        res.status(201).json({ 
+            message: "User created successfully", 
+            userId: user.id,
+            token,
+            user: { id: user.id, username: user.username, balance: user.balance }
+        });
     } catch (error) {
         console.log(error)
         res.status(400).json({ message: "Username already exists or invalid data" });

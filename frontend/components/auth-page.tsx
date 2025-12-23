@@ -32,7 +32,7 @@ export default function AuthPage({ onLoginSuccess }: AuthPageProps) {
           {isLogin ? (
             <LoginForm onSuccess={onLoginSuccess} onSwitchToRegister={() => setIsLogin(false)} />
           ) : (
-            <RegisterForm onSuccess={() => setIsLogin(true)} onSwitchToLogin={() => setIsLogin(true)} />
+            <RegisterForm onSuccess={onLoginSuccess} onSwitchToLogin={() => setIsLogin(true)} />
           )}
         </div>
 
