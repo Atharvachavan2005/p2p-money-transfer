@@ -3,9 +3,14 @@
 A peer-to-peer fund transfer application with real-time updates and immutable audit logging. Built as part of Assignment 2: Real-time Transaction & Audit Log System.
 
 ## 🎥 Demo Video
-**[Watch the Demo Video](YOUR_VIDEO_LINK_HERE)**
 
-> The demo covers: user registration, login, fund transfers, real-time balance updates, and transaction history.
+<p align="center">
+  <a href="https://drive.google.com/file/d/101CjNC4RYNxKbAFyL0Cd2sOGEoTNP3MR/preview" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/▶️%20Play%20Demo%20Video-red?style=for-the-badge&logo=google-drive" alt="Play Demo Video" />
+  </a>
+</p>
+
+The demo covers: user registration, login, fund transfers, real-time balance updates, and transaction history. You can also open the video directly: **[Watch the Demo Video](https://drive.google.com/file/d/101CjNC4RYNxKbAFyL0Cd2sOGEoTNP3MR/preview)**
 
 ## 🌐 Live Deployment
 - **Frontend**: [https://p2p-money-transfer.vercel.app](https://p2p-money-transfer.vercel.app)
