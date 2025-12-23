@@ -6,11 +6,20 @@ A peer-to-peer fund transfer application with real-time updates and immutable au
 
 <p align="center">
   <a href="https://drive.google.com/file/d/101CjNC4RYNxKbAFyL0Cd2sOGEoTNP3MR/preview" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/badge/▶️%20Play%20Demo%20Video-red?style=for-the-badge&logo=google-drive" alt="Play Demo Video" />
+    <!-- Local thumbnail: place a file named demo/thumbnail.png in the repo to show here -->
+    <img src="demo/thumbnail.png" alt="Demo thumbnail" style="max-width:100%;border-radius:6px;" />
   </a>
 </p>
 
 The demo covers: user registration, login, fund transfers, real-time balance updates, and transaction history. You can also open the video directly: **[Watch the Demo Video](https://drive.google.com/file/d/101CjNC4RYNxKbAFyL0Cd2sOGEoTNP3MR/preview)**
+
+Note: If `demo/thumbnail.png` is missing, the badge below will be shown instead:
+
+<p align="center">
+  <a href="https://drive.google.com/file/d/101CjNC4RYNxKbAFyL0Cd2sOGEoTNP3MR/preview" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/▶️%20Play%20Demo%20Video-red?style=for-the-badge&logo=google-drive" alt="Play Demo Video" />
+  </a>
+</p>
 
 ## 🌐 Live Deployment
 - **Frontend**: [https://p2p-money-transfer.vercel.app](https://p2p-money-transfer.vercel.app)
