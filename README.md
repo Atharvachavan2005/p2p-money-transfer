@@ -5,19 +5,19 @@ A peer-to-peer fund transfer application with real-time updates and immutable au
 ## 🎥 Demo Video
 
 <p align="center">
-  <a href="https://drive.google.com/file/d/101CjNC4RYNxKbAFyL0Cd2sOGEoTNP3MR/preview" target="_blank" rel="noopener noreferrer">
+  <a href="https://drive.google.com/file/d/16UmXm7szeKcmi3nSmaOErimyK1LSsMQt/view?usp=sharing" target="_blank" rel="noopener noreferrer">
     <!-- Local thumbnail: place a file named demo/thumbnail.png in the repo to show here -->
     <img src="demo/thumbnail.png" alt="Demo thumbnail" style="max-width:100%;border-radius:6px;" />
   </a>
 </p>
 
-The demo covers: user registration, login, fund transfers, real-time balance updates, and transaction history. You can also open the video directly: **[Watch the Demo Video](https://drive.google.com/file/d/101CjNC4RYNxKbAFyL0Cd2sOGEoTNP3MR/preview)**
+The demo covers: user registration, login, fund transfers, real-time balance updates, and transaction history. You can also open the video directly: **[Watch the Demo Video](https://drive.google.com/file/d/16UmXm7szeKcmi3nSmaOErimyK1LSsMQt/view?usp=sharing)**
 
 
 
 <p align="center">
-  <a href="https://drive.google.com/file/d/101CjNC4RYNxKbAFyL0Cd2sOGEoTNP3MR/preview" target="_blank" rel="noopener noreferrer">
-    <img src="https://img.shields.io/badge/▶️%20Play%20Demo%20Video-red?style=for-the-badge&logo=google-drive" alt="Play Demo Video" />
+  <a href="https://drive.google.com/file/d/16UmXm7szeKcmi3nSmaOErimyK1LSsMQt/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+    <img src="https://drive.google.com/file/d/16UmXm7szeKcmi3nSmaOErimyK1LSsMQt/view?usp=sharing" alt="Play Demo Video" />
   </a>
 </p>
 
